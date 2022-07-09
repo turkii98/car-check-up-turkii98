@@ -14,28 +14,28 @@ object CarCheckUpSystem {
         val fourthCar = Car("Audi", "TT", "CET")
         vinMap = mapOf(Pair("PRVI", firstCar), Pair("DRUGI", secondCar), Pair("TRECI", thirdCar), Pair("CET", fourthCar))
         checkUpList = mutableListOf(
-            CarCheckUp(LocalDateTime.of(2022, 7, 5, 17, 30), firstCar),
+            CarCheckUp(LocalDateTime.of(2021, 7, 5, 17, 30), firstCar),
             CarCheckUp(LocalDateTime.of(2021, 7, 5, 17, 30), secondCar),
             CarCheckUp(LocalDateTime.of(2021, 7, 5, 17, 30), thirdCar),
             CarCheckUp(LocalDateTime.of(2019, 7, 5, 17, 30), fourthCar),
-            CarCheckUp(LocalDateTime.of(2022, 7, 5, 17, 30), firstCar),
-            CarCheckUp(LocalDateTime.of(2022, 7, 5, 17, 30), thirdCar),
-            CarCheckUp(LocalDateTime.of(2022, 7, 5, 17, 30), secondCar),
-            CarCheckUp(LocalDateTime.of(2022, 7, 5, 17, 30), firstCar),
-            CarCheckUp(LocalDateTime.of(2020, 7, 5, 17, 30), fourthCar),
+            CarCheckUp(LocalDateTime.of(2021, 7, 6, 17, 30), firstCar),
+            CarCheckUp(LocalDateTime.of(2021, 7, 5, 17, 30), thirdCar),
+            CarCheckUp(LocalDateTime.of(2021, 7, 5, 17, 30), secondCar),
+            CarCheckUp(LocalDateTime.of(2022, 7, 7, 17, 30), firstCar),
+            CarCheckUp(LocalDateTime.of(2021, 7, 8, 17, 30), fourthCar),
             CarCheckUp(LocalDateTime.of(2021, 7, 8, 22, 12), firstCar),
         )
     }
 
     fun printList(){
         for (i in checkUpList) {
-            println(i.car.vin)
+            println(i)
         }
     }
 
 
-    fun isCheckUpNecessary(vin: String): Boolean = !checkUpList.none {(it.car.vin == vin) &&
-            (Duration.between(it.performedAt, LocalDateTime.now()).toDays() >= 365)
+    fun isCheckUpNecessary(vin: String): Boolean = checkUpList.none {(it.car.vin == vin) &&
+            (it.performedAt.isAfter(LocalDateTime.now().minusYears(1)))
              }
 
 
