@@ -1,4 +1,4 @@
-package com.infinum.course.car.checkup
+package com.infinum.course.car
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
