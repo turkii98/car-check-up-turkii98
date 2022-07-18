@@ -1,7 +1,7 @@
-package com.infinum.course.car
+package com.infinum.course.carcheckup
 
-import com.infinum.course.car.service.CarCheckUpSystemService
-import com.infinum.course.checkup.entity.Car
+import com.infinum.course.carcheckup.service.CarCheckUpSystemService
+import com.infinum.course.car.entity.Car
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach

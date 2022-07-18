@@ -1,10 +1,7 @@
-package com.infinum.course.car.controller
+package com.infinum.course.carcheckup.controller
 
-import com.infinum.course.car.CarNotFoundException
-import com.infinum.course.checkup.entity.Car
-import com.infinum.course.car.entity.CarCheckUp
-import com.infinum.course.car.service.CarCheckUpSystemService
-import com.infinum.course.checkup.CarCheckUpNotFoundException
+import com.infinum.course.car.entity.Car
+import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -30,6 +27,10 @@ class CarController (private val carCheckUpSystemService: CarCheckUpSystemServic
         val checkNeccessary = carCheckUpSystemService.isCheckUpNecessary(newCar.id)
         if(checkNeccessary) {
             carCheckUpSystemService.getCarById(id).needCheckUp = true
+        }
+        else {
+            carCheckUpSystemService.getCarById(id).needCheckUp = false
+
         }
         return ResponseEntity(newCar, HttpStatus.OK)
     }

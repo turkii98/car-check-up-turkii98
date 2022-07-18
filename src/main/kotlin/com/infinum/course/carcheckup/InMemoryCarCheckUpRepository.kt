@@ -1,4 +1,4 @@
-package com.infinum.course.car
+package com.infinum.course.carcheckup
 
 /*
 @Component
