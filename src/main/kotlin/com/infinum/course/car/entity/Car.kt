@@ -1,6 +1,6 @@
-package com.infinum.course.checkup.entity
+package com.infinum.course.car.entity
 
-import com.infinum.course.car.entity.CarCheckUp
+import com.infinum.course.checkup.entity.CarCheckUp
 import java.time.LocalDate
 
 data class Car (

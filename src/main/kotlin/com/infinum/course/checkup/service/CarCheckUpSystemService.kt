@@ -1,9 +1,9 @@
-package com.infinum.course.car.service
+package com.infinum.course.checkup.service
 
 import com.infinum.course.checkup.CarCheckUpNotFoundException
 import com.infinum.course.car.CarNotFoundException
-import com.infinum.course.checkup.entity.Car
-import com.infinum.course.car.entity.CarCheckUp
+import com.infinum.course.car.entity.Car
+import com.infinum.course.checkup.entity.CarCheckUp
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.LocalDateTime
