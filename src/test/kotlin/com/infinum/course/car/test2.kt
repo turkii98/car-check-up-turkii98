@@ -1,7 +1,7 @@
 package com.infinum.course.car
 
-import com.infinum.course.checkup.service.CarCheckUpSystemService
-import com.infinum.course.car.entity.Car
+import com.infinum.course.car.service.CarCheckUpSystemService
+import com.infinum.course.checkup.entity.Car
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
 import org.junit.jupiter.api.BeforeEach
@@ -28,7 +28,7 @@ class test2 {
 
     @BeforeEach
     fun setUp(){
-            every { carCheckUpSystemService.getCarById(123) } answers { Car(123, LocalDate.of(2022, 6,13) , "Audi", "TT", "2022", "PRVI", needCheckUp = false) }
+            every { carCheckUpSystemService.getCarById(123) } answers {Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI", needCheckUp = false)}
     }
     @Test
     fun testGetCar(){

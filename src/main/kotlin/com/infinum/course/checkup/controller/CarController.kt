@@ -1,7 +1,10 @@
 package com.infinum.course.car.controller
 
-import com.infinum.course.car.entity.Car
-import com.infinum.course.checkup.service.CarCheckUpSystemService
+import com.infinum.course.car.CarNotFoundException
+import com.infinum.course.checkup.entity.Car
+import com.infinum.course.car.entity.CarCheckUp
+import com.infinum.course.car.service.CarCheckUpSystemService
+import com.infinum.course.checkup.CarCheckUpNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -34,7 +37,6 @@ class CarController (private val carCheckUpSystemService: CarCheckUpSystemServic
     @ExceptionHandler(value = [Exception::class])
     fun handleException(ex: Exception): ResponseEntity<String> {
         println("There is no such car")
-        println(ex.message)
         return ResponseEntity("No CheckUps for that car",HttpStatus.BAD_REQUEST)
     }
 

@@ -1,7 +1,8 @@
-package com.infinum.course.checkup.repository
+package com.infinum.course.car.repository
 
-import com.infinum.course.car.entity.Car
-import com.infinum.course.checkup.entity.CarCheckUp
+import com.infinum.course.checkup.entity.Car
+import com.infinum.course.car.entity.CarCheckUp
+import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
 //@Component
