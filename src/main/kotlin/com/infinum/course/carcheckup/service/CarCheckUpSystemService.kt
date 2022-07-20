@@ -1,6 +1,7 @@
 package com.infinum.course.carcheckup.service
 
 import com.infinum.course.car.CarCheckUpNotFoundException
+import com.infinum.course.car.CarDTO
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.car.entity.Car
 import com.infinum.course.carcheckup.entity.CarCheckUp
@@ -17,8 +18,8 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
         carCheckUpsMap[123] = CarCheckUp(2, LocalDateTime.of(2019, 6,13,17,30), "Marko", 37000, 123)
 
         ctr = 3
-        cars[1] = Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI", mutableListOf(carCheckUpsMap[123] ?: throw CarNotFoundException(123)))
-        cars[2] = Car(321, LocalDate.now(), "Ford", "Mustang", "2019", "DRUGI", mutableListOf(carCheckUpsMap[321] ?: throw CarNotFoundException(321)))
+        cars[123] = Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI", mutableListOf(carCheckUpsMap[123] ?: throw CarNotFoundException(123)))
+        cars[321] = Car(321, LocalDate.now(), "Ford", "Mustang", "2019", "DRUGI", mutableListOf(carCheckUpsMap[321] ?: throw CarNotFoundException(321)))
 
     }
 
@@ -77,7 +78,9 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
         val newCars = cars.filter() { it.value.id == id }
         val newCar = newCars.values
         println("NEW CARS"+newCar)
-        return (newCar.first() ?: throw CarCheckUpNotFoundException(id))
+        if (newCar.isEmpty()) throw CarNotFoundException(id)
+        println("nije empty")
+        return (newCar.first())
     }
 
     fun countCheckUps(manufacturer: String): Int {
@@ -89,10 +92,15 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
 
     fun isCheckUpNecessary(id: Long): Boolean {
         val all = carCheckUpsMap
+        println("pukneeeee1")
+        val car = cars[id] ?: throw CarNotFoundException(id)
+        println("pukneeeee2")
         val returnValue = all.none{ (it.value.carId == id) && (it.value.performedAt.isAfter(LocalDateTime.now().minusYears(1)))}
+        println("pukneeeeee3")
         if(returnValue){
             println("TRIBA"+cars[id])
-            cars[id]?.needCheckUp = true
+           // cars[id]?.needCheckUp = true
+            //carDTO.needCheckUp = true
             return returnValue
         }
         else return false

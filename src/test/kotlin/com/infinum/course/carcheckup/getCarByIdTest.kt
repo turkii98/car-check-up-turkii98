@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.get
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class test {
+class getCarByIdTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc

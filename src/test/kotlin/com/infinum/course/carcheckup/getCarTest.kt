@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.get
 import java.time.LocalDate
 
 @WebMvcTest
-class test2 {
+class getCarTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -28,7 +28,7 @@ class test2 {
 
     @BeforeEach
     fun setUp(){
-            every { carCheckUpSystemService.getCarById(123) } answers {Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI", needCheckUp = false)}
+            every { carCheckUpSystemService.getCarById(123) } answers {Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI")}
     }
     @Test
     fun testGetCar(){

@@ -1,5 +1,6 @@
 package com.infinum.course.carcheckup.controller
 
+import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.http.HttpStatus
@@ -22,8 +23,8 @@ class CarCheckUpController (private val carCheckUpSystemService: CarCheckUpSyste
 
     }
 
-    @ExceptionHandler(value = [(Exception::class)])
-    fun handleException(ex: Exception): ResponseEntity<String> {
+    @ExceptionHandler(value = [(CarNotFoundException::class)])
+    fun handleException(ex: CarNotFoundException): ResponseEntity<String> {
         println("There is no such car")
         return ResponseEntity("No CheckUps for that car",HttpStatus.BAD_REQUEST)
     }
