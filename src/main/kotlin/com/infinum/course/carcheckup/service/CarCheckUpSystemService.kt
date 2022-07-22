@@ -17,17 +17,9 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
     //val checkUpList: MutableList<CarCheckUp>
 
 
-/*
-    fun getCheckUps(): Map<Long, CarCheckUp> {
-        val map = mutableMapOf<Long, CarCheckUp>()
-        jdbcTemplate.query(
-            "select * from checkup")
 
-        }
-        )
-    }
 
-*/
+
     fun addCar(manufacturer: String, model:String, year:String, vin: String) : Car {
         ctr+=1
         val id = (Math.random()*1000).toLong()
@@ -49,18 +41,11 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
 
 
     fun addCheckUp(worker: String, price: Long, carId: Long): CarCheckUp {
-        val check = getCarById(carId)
+        val check = getCarById(carId)    //invokes NoCarException if there is no such car
         val id = (Math.random()*1000).toLong()
         val performedAt = LocalDateTime.now()
         val newCheckUp = CarCheckUp(id, performedAt,worker, price, carId)
-        /*
-        for (car in cars) {
-            if (car.value.id == carId) {
-                car.value.checkUps.add(newCheckUp)
-                break
-            }
-        }
-*/
+
         jdbcTemplate.update(
             "insert into carcheckup values (:id, :performedat, :workername, :price, :carid)",
             mapOf("id" to id, "workername" to worker, "price" to price, "carid" to carId, "performedat" to performedAt)
@@ -75,10 +60,65 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
 
     }
 
+    fun getCheckUps(): Map<Long, CarCheckUp> {
+        println("inside getCheckUps")
+        val map = mutableMapOf<Long, CarCheckUp>()
+        jdbcTemplate.query(
+            "select * from carcheckup")
+        {
+            resultSet, _ ->
+            println("inside getCheckUps")
+            CarCheckUp(
+                id=resultSet.getLong("id"),
+                performedAt = resultSet.getTimestamp("performedat").toLocalDateTime(),
+                workerName = resultSet.getString("workername"),
+                price = resultSet.getLong("price"),
+                carId = resultSet.getLong("carid"))
+            map.put(key = resultSet.getLong("id"), value = CarCheckUp(
+                id=resultSet.getLong("id"),
+                performedAt = resultSet.getTimestamp("performedat").toLocalDateTime(),
+                workerName = resultSet.getString("workername"),
+                price = resultSet.getLong("price"),
+                carId = resultSet.getLong("carid")))
+            println("inside getCheckUps")
+        }
+        return map
+    }
+
+    fun getCheckUpsById(carId: Long): MutableList<CarCheckUp> {
+        println("inside getCheckUpsById")
+        val list = mutableListOf<CarCheckUp>()
+        jdbcTemplate.query(
+            "select * from carcheckup")
+        {
+                resultSet, _ ->
+            println("inside getCheckUps")
+            CarCheckUp(
+                id=resultSet.getLong("id"),
+                performedAt = resultSet.getTimestamp("performedat").toLocalDateTime(),
+                workerName = resultSet.getString("workername"),
+                price = resultSet.getLong("price"),
+                carId = resultSet.getLong("carid"))
+            if(carId == resultSet.getLong("carid")) {
+                list.add(
+                    CarCheckUp(
+                        id = resultSet.getLong("id"),
+                        performedAt = resultSet.getTimestamp("performedat").toLocalDateTime(),
+                        workerName = resultSet.getString("workername"),
+                        price = resultSet.getLong("price"),
+                        carId = resultSet.getLong("carid")
+                    )
+                )
+                println("inside getCheckUps")
+            }
+        }
+        return list
+    }
+
+
     fun getCarById(id: Long): Car {
 
         try {
-
             return jdbcTemplate.queryForObject(
                 "SELECT * FROM Car WHERE id = :id",
                 mapOf("id" to id)
@@ -106,16 +146,13 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
 
 
     fun isCheckUpNecessary(id: Long): Boolean {
-        val all = carCheckUpsMap
+        val list = getCheckUpsById(id)
         println("pukneeeee1")
-        val car = cars[id] ?: throw CarNotFoundException(id)
-        println("pukneeeee2")
-        val returnValue = all.none{ (it.value.carId == id) && (it.value.performedAt.isAfter(LocalDateTime.now().minusYears(1)))}
+
+        val returnValue = list.none{ (it.performedAt.isAfter(LocalDateTime.now().minusYears(1)))}
         println("pukneeeeee3")
         if(returnValue){
             println("TRIBA"+cars[id])
-           // cars[id]?.needCheckUp = true
-            //carDTO.needCheckUp = true
             return returnValue
         }
         else return false

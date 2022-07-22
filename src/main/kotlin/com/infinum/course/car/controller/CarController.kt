@@ -17,11 +17,6 @@ class CarController (private val carCheckUpSystemService: CarCheckUpSystemServic
     @ResponseBody
     fun addCar(@RequestBody car: Car):ResponseEntity<Car>{
         val newCar = carCheckUpSystemService.addCar(car.manufacturer,car.model, car.productionYear, car.vin)
-        println("--------------------------")
-       // println(carCheckUpSystemService.getCheckUps())
-        //println(carCheckUpSystemService.cars)
-        println("--------------------------")
-
         return ResponseEntity(newCar, HttpStatus.OK)
 
     }
@@ -33,17 +28,19 @@ class CarController (private val carCheckUpSystemService: CarCheckUpSystemServic
         println("pukne0")
         val newCar = carCheckUpSystemService.getCarById(id)
         println("pukne1")
-        //val checkNeccessary = carCheckUpSystemService.isCheckUpNecessary(newCar.id)
         println("pukne2")
         val newCarDTO = CarDTO(newCar)
         println("pukne3")
-        //if(checkNeccessary) {
-            //newCarDTO.needCheckUp = true
-        //}
-        //else {
+        val list =carCheckUpSystemService.getCheckUpsById(id)
+        newCarDTO.checkUps = list
+        val checkNeccessary = carCheckUpSystemService.isCheckUpNecessary(id)
+        if(checkNeccessary) {
+            newCarDTO.needCheckUp = true
+        }
+        else {
             newCarDTO.needCheckUp = false
 
-       //  }
+         }
         return ResponseEntity(newCarDTO, HttpStatus.OK)
     }
 

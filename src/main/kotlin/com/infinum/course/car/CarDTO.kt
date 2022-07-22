@@ -5,6 +5,6 @@ import com.infinum.course.carcheckup.entity.CarCheckUp
 
 data class CarDTO (
     val car:Car,
-    val checkUps: MutableList<CarCheckUp> = mutableListOf(),
+    var checkUps: MutableList<CarCheckUp> = mutableListOf(),
     var needCheckUp: Boolean = false
 )
