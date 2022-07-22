@@ -10,6 +10,6 @@ data class Car (
     val model: String,
     val productionYear: String,
     val vin: String,
-    val checkUps: MutableList<CarCheckUp> = mutableListOf(),
+
 
 )

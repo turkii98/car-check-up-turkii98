@@ -1,0 +1,1 @@
+create table car(id bigint, addedDate date, manufacturer text, model text, productionYear text, vin text);

@@ -1,0 +1,17 @@
+version: "3"
+
+# docker run --name my-db -e POSTGRES_PASSWORD=admin -e POSTGRES_USER=admin -e 
+# POSTGRES_DB=my-db -p 5432:5432 -v car-data:/var/lib/postgresql/data postgres
+services:
+    my-db:
+        image: "postgres"
+        ports:
+            - "5432:5432"
+        volumes:
+            - "car-data:/var/lib/postgresql/data"
+        environment:
+            - "POSTGRES_USER=admin"
+            - "POSTGRES_PASSWORD=admin"
+            - "POSTGRES_DB=my-db"
+volumes:
+    car-data:

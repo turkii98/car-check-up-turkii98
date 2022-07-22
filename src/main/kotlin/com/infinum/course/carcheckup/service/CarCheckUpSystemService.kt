@@ -5,65 +5,66 @@ import com.infinum.course.car.CarDTO
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.car.entity.Car
 import com.infinum.course.carcheckup.entity.CarCheckUp
+import org.springframework.dao.EmptyResultDataAccessException
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
+import java.sql.ResultSet
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
-class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUpsMap: MutableMap<Long, CarCheckUp>, var ctr: Long = 0){
+class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUpsMap: MutableMap<Long, CarCheckUp>, var ctr: Long = 0,val jdbcTemplate: NamedParameterJdbcTemplate){
     //val checkUpList: MutableList<CarCheckUp>
 
-    init {
-        carCheckUpsMap[321] = CarCheckUp(1, LocalDateTime.now(), "Ivan", 20000, 321 )
-        carCheckUpsMap[123] = CarCheckUp(2, LocalDateTime.of(2019, 6,13,17,30), "Marko", 37000, 123)
 
-        ctr = 3
-        cars[123] = Car(123, LocalDate.of(2019, 6,13) , "Audi", "TT", "2022", "PRVI", mutableListOf(carCheckUpsMap[123] ?: throw CarNotFoundException(123)))
-        cars[321] = Car(321, LocalDate.now(), "Ford", "Mustang", "2019", "DRUGI", mutableListOf(carCheckUpsMap[321] ?: throw CarNotFoundException(321)))
-
-    }
-
-
-
+/*
     fun getCheckUps(): Map<Long, CarCheckUp> {
-        return carCheckUpsMap
+        val map = mutableMapOf<Long, CarCheckUp>()
+        jdbcTemplate.query(
+            "select * from checkup")
+
+        }
+        )
     }
 
-
+*/
     fun addCar(manufacturer: String, model:String, year:String, vin: String) : Car {
-        val checkUpList: MutableList<CarCheckUp> = mutableListOf()
         ctr+=1
         val id = (Math.random()*1000).toLong()
-        val car = Car(id, LocalDate.now(), manufacturer, model, year, vin, checkUpList)
-        cars.put(id,car)
-        println(cars)
+        val car = Car(id, LocalDate.now(), manufacturer, model, year, vin)
+        val addedDate = LocalDate.now()
+       // cars.put(id,car)
+       // println(cars)
+        jdbcTemplate.update(
+            "insert into car values (:id, :addeddate, :manufacturer, :model, :year, :vin)",
+            mapOf("id" to id, "addeddate" to addedDate, "manufacturer" to manufacturer, "year" to year, "vin" to vin , "model" to model)
+        )
         return car
     }
 
 
-    fun removeCheckUp(id : Long){
-        carCheckUpsMap.remove(id)
-    }
+    //fun removeCheckUp(id : Long){
+      //  carCheckUpsMap.remove(id)
+    //}
 
 
     fun addCheckUp(worker: String, price: Long, carId: Long): CarCheckUp {
-        if(cars.none(){carId == it.value.id}){
-            throw CarNotFoundException(carId)
-        }
-        ctr += 1
-        val newCheckUp = CarCheckUp((Math.random()*1000).toLong(), LocalDateTime.now(),worker, price, carId)
-        carCheckUpsMap.put(ctr, newCheckUp)
-
+        val check = getCarById(carId)
+        val id = (Math.random()*1000).toLong()
+        val performedAt = LocalDateTime.now()
+        val newCheckUp = CarCheckUp(id, performedAt,worker, price, carId)
+        /*
         for (car in cars) {
             if (car.value.id == carId) {
                 car.value.checkUps.add(newCheckUp)
                 break
             }
         }
-
-        println(cars)
-        println("-------------------")
-        println(carCheckUpsMap)
+*/
+        jdbcTemplate.update(
+            "insert into carcheckup values (:id, :performedat, :workername, :price, :carid)",
+            mapOf("id" to id, "workername" to worker, "price" to price, "carid" to carId, "performedat" to performedAt)
+        )
         return newCheckUp
     }
 
@@ -75,12 +76,26 @@ class CarCheckUpSystemService (var cars : MutableMap<Long, Car>, var carCheckUps
     }
 
     fun getCarById(id: Long): Car {
-        val newCars = cars.filter() { it.value.id == id }
-        val newCar = newCars.values
-        println("NEW CARS"+newCar)
-        if (newCar.isEmpty()) throw CarNotFoundException(id)
-        println("nije empty")
-        return (newCar.first())
+
+        try {
+
+            return jdbcTemplate.queryForObject(
+                "SELECT * FROM Car WHERE id = :id",
+                mapOf("id" to id)
+            ) { resultSet, _ ->
+                Car(
+                    id = resultSet.getLong("id"),
+                    addedDate = resultSet.getDate("addeddate").toLocalDate(),
+                    manufacturer = resultSet.getString("manufacturer"),
+                    model = resultSet.getString("model"),
+                    productionYear = resultSet.getString("productionyear"),
+                    vin = resultSet.getString("vin")
+                )
+            }
+        }
+        catch (ex:EmptyResultDataAccessException) {
+            throw CarNotFoundException(id)
+        }
     }
 
     fun countCheckUps(manufacturer: String): Int {
