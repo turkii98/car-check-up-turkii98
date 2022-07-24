@@ -1,4 +1,4 @@
-package com.infinum.course.carcheckup
+package com.infinum.course
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
