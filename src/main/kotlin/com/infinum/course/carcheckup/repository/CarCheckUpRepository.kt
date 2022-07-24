@@ -1,9 +1,10 @@
-package com.infinum.course.car.checkup
+package com.infinum.course.carcheckup.repository
 
-import org.springframework.stereotype.Component
+import com.infinum.course.car.entity.Car
+import com.infinum.course.carcheckup.entity.CarCheckUp
 import java.time.LocalDateTime
 
-@Component
+//@Component
 interface CarCheckUpRepository {
     fun insert(performedAt: LocalDateTime, car: Car): Long
     fun findById(id: Long): CarCheckUp
