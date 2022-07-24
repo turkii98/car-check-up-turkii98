@@ -11,6 +11,7 @@ interface CarCheckUpRepository {
     fun addCheckUp(worker: String, price: Long, carId: Long): CarCheckUp
     fun getCheckUps(): Map<Long, CarCheckUp>
     fun getCheckUpsById(carId: Long): MutableList<CarCheckUp>
+    fun getManufacturerCount(): MutableMap<String, Long>
 }
 
 @Repository
@@ -84,6 +85,19 @@ class JdbcCarCheckUpRepo (
             }
         }
         return list
+    }
+
+    override fun getManufacturerCount(): MutableMap<String, Long>{
+        val map = mutableMapOf<String, Long>()
+            jdbcTemplate.query(
+                "select manufacturer, count(manufacturer) from carcheckup join car on car.id = carcheckup.carid group by manufacturer"
+            ) {
+                resultSet, _ ->
+                println("inside count")
+                map[resultSet.getString("manufacturer")] = resultSet.getLong("count")
+
+            }
+        return map
     }
 
 

@@ -40,7 +40,7 @@ fun testGetCarById(){
         )
     ).isEqualTo("merco")
 }
-    @Test
+   /* @Test
     fun testCount() {
         Assertions.assertThat(
             jdbcTemplate.queryForObject(
@@ -50,5 +50,5 @@ fun testGetCarById(){
             )
         ).isEqualTo(1)
     }
-
+*/
 }

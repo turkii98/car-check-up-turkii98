@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseBody
 
 @Controller
-class CarCheckUpController (private val carCheckUpSystemService: CarCheckUpSystemService,
+class CarCheckUpController (
 private val carCheckUpRepository: JdbcCarCheckUpRepo){
 
     @PostMapping("/add-checkup")

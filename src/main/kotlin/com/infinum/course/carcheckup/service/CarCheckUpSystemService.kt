@@ -23,21 +23,8 @@ class CarCheckUpSystemService (
 
 
 
-    fun countCheckUps(): MutableMap<String?,Long?> {
-        val all = carCheckupRepository.getCheckUps()
-        val cars = carRepository.findCar()
-        var map = mutableMapOf<String?,Long?>()
-        for(it in all.values){
-            println("it "+it)
-            try {
-                map.putIfAbsent(cars[it.carId]?.manufacturer, 1)
-                map[ cars[it.carId]?.manufacturer ] = map[ cars[it.carId]?.manufacturer ]?.plus(1)
-            }
-            catch (exc: java.lang.Exception){
-                map[cars[it.carId]?.manufacturer] = 1
-            }
-        }
-        val count = 0
+    fun countCheckUps(): MutableMap<String,Long> {
+        var map = carCheckupRepository.getManufacturerCount()
         return map
     }
 

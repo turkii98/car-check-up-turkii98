@@ -4,6 +4,7 @@ import com.infinum.course.car.CarDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.repository.JdbcCarRepository
+import com.infinum.course.car.service.CarService
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.repository.JdbcCarCheckUpRepo
@@ -18,7 +19,8 @@ import org.springframework.web.bind.annotation.*
 class CarController (
     private val carCheckUpSystemService: CarCheckUpSystemService,
     private val carRepository: JdbcCarRepository,
-    private val carCheckUpRepository: JdbcCarCheckUpRepo
+    private val carCheckUpRepository: JdbcCarCheckUpRepo,
+    private val carService: CarService
 ){
 
     @PostMapping("/add-car")
@@ -31,20 +33,14 @@ class CarController (
 
     @GetMapping("/get-stats")
     @ResponseBody
-    fun getStats(): ResponseEntity<Map<String?, Long?>> {
+    fun getStats(): ResponseEntity<Map<String, Long>> {
         return ResponseEntity(carCheckUpSystemService.countCheckUps(), HttpStatus.OK)
     }
 
     @GetMapping("/get-car")
     @ResponseBody
     fun getCar(@RequestParam("id", defaultValue = "123") id: Long):ResponseEntity<CarDTO>{
-        val newCar = carRepository.findCarById(id)
-        val newCarDTO = CarDTO(newCar ?: throw CarNotFoundException(id))
-        val list =carCheckUpRepository.getCheckUpsById(id)
-        newCarDTO.checkUps = list
-        val checkNeccessary = carCheckUpSystemService.isCheckUpNecessary(id)
-        newCarDTO.needCheckUp = checkNeccessary
-        return ResponseEntity(newCarDTO, HttpStatus.OK)
+        return ResponseEntity(carService.getCarDTO(id), HttpStatus.OK)
     }
 
     @ExceptionHandler(value = [CarNotFoundException::class])
