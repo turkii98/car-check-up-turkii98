@@ -3,6 +3,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE" // Handles Spring Boot dependencies
     kotlin("jvm") version "1.7.0"
     kotlin("plugin.spring") version "1.7.0"
+    kotlin("plugin.jpa") version "1.7.10"
 }
 
 group = "com.infinum.course"
@@ -12,10 +13,10 @@ repositories {
     mavenCentral()
 }
 
-extra["testcontainersVersion"] = "1.15.3"
+extra["testcontainersVersion"] = "1.16.0"
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.flywaydb:flyway-core")
