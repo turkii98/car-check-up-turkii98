@@ -12,8 +12,8 @@ import java.util.UUID
 
 interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
 
-    @Query("select manufacturer, count(manufacturer) from carcheckup join car on car.id = carcheckup.car_id group by manufacturer")
-    fun findManufacturer(): MutableMap<String, Long>
+    @Query(nativeQuery = true, value = "select manufacturer from carcheckup join car on car.id = carcheckup.car_id")
+    fun findByManufacturer(): List<String>
     fun save(carcheckup: CarCheckUp): CarCheckUp
     override fun findAll(): MutableList<CarCheckUp>
     fun findAllByCarId(carId: UUID): MutableList<CarCheckUp>

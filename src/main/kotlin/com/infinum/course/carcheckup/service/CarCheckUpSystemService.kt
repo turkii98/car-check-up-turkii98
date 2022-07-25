@@ -18,10 +18,15 @@ class CarCheckUpSystemService (
 
 
     fun countCheckUps(): MutableMap<String,Long> {
-        var map = carCheckupRepository.findManufacturer()
-        println(map.keys)
-        println(map.values)
+        var list = carCheckupRepository.findByManufacturer()
+        var map = mutableMapOf<String,Long>()
+        for (el in list) {
+            if (map.putIfAbsent(el, 1) != null)
+            map.put(el, map[el]?.plus(1) ?: 1)
+            //map[el] = temp
+        }
         return map
+        //return mutableMapOf<String,Long>()
     }
 
 
