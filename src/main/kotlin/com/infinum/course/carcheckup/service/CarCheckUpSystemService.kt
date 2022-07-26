@@ -26,7 +26,6 @@ class CarCheckUpSystemService (
             //map[el] = temp
         }
         return map
-        //return mutableMapOf<String,Long>()
     }
 
 

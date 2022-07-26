@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import java.awt.print.Pageable
 import java.util.*
+import org.springframework.data.domain.Pageable
 
 @Controller
 class CarController (
@@ -28,13 +28,15 @@ class CarController (
 
     }
 
+    @GetMapping("/get-cars")
+    @ResponseBody
+    fun getCars(pageable: Pageable) = ResponseEntity.ok(carRepository.findAll(pageable))
+
+
     @GetMapping("/get-stats")
     @ResponseBody
     fun getStats(): ResponseEntity<Map<String, Long>> {
-        var map = carCheckUpSystemService.countCheckUps()
-        for (i in map) {
-            //println(i.key + ": "+ i.value)
-        }
+
         return ResponseEntity(carCheckUpSystemService.countCheckUps(), HttpStatus.OK)
     }
 
