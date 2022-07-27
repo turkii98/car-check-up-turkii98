@@ -14,9 +14,7 @@ class Car (
 
     val addedDate: LocalDate = LocalDate.now(),
 
-    val manufacturer: String,
-
-    val model: String,
+    val modelId: UUID,
 
     val productionYear: String,
 

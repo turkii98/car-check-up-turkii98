@@ -1,11 +1,15 @@
 package com.infinum.course.carcheckup.controller
 
-import com.infinum.course.car.CarDTO
+import com.infinum.course.ManufacturerModel.repository.ManufacturerModelRepository
+import com.infinum.course.ManufacturerModel.service.RestTemplateManufacturerAndModelService
+import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
+import org.hibernate.exception.SQLGrammarException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -17,12 +21,14 @@ import org.springframework.data.domain.Pageable
 class CarController (
     private val carCheckUpSystemService: CarCheckUpSystemService,
     private val carRepository: CarRepository,
-    private val carService: CarService
+    private val carService: CarService,
+    private val manufacturerModelRepository: ManufacturerModelRepository
 ){
 
     @PostMapping("/add-car")
     @ResponseBody
     fun addCar(@RequestBody car: Car):ResponseEntity<Car>{
+        val newMmdb = manufacturerModelRepository.findById(car.modelId)
         val newCar = carRepository.save(car)
         return ResponseEntity(newCar, HttpStatus.OK)
 
@@ -50,6 +56,12 @@ class CarController (
     fun handleException(ex: CarNotFoundException): ResponseEntity<String> {
         println("There is no such car")
         return ResponseEntity("No CheckUps for that car",HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(value = [EmptyResultDataAccessException::class])
+    fun handleException(ex: EmptyResultDataAccessException): ResponseEntity<String> {
+        println("There is no such model")
+        return ResponseEntity("No such model",HttpStatus.BAD_REQUEST)
     }
 
 }

@@ -1,4 +1,4 @@
-package com.infinum.course.car
+package com.infinum.course.car.dto
 
 import com.infinum.course.car.entity.Car
 import com.infinum.course.carcheckup.entity.CarCheckUp

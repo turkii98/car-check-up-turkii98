@@ -14,7 +14,9 @@ import java.util.UUID
 
 interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
 
-    @Query(nativeQuery = true, value = "select manufacturer from carcheckup join car on car.id = carcheckup.car_id")
+    @Query(nativeQuery = true, value = "select manufacturer from carcheckup \n" +
+            "join car on car.id = carcheckup.car_id \n" +
+            "join manufacturermodel on manufacturermodel.id = car.model_id")
     fun findByManufacturer(): List<String>
     fun save(carcheckup: CarCheckUp): CarCheckUp
     fun findByCarId(pageable: Pageable, uuid: UUID): Page<CarCheckUp>

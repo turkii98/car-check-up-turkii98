@@ -1,0 +1,1 @@
+create table manufacturerModel(id UUID, manufacturer text, model text);
