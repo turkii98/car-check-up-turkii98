@@ -1,14 +1,12 @@
 package com.infinum.course.carcheckup.controller
 
 import com.infinum.course.ManufacturerModel.repository.ManufacturerModelRepository
-import com.infinum.course.ManufacturerModel.service.RestTemplateManufacturerAndModelService
 import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
-import org.hibernate.exception.SQLGrammarException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -27,9 +25,9 @@ class CarController (
 
     @PostMapping("/add-car")
     @ResponseBody
-    fun addCar(@RequestBody car: Car):ResponseEntity<Car>{
+    fun addCar(@RequestBody car: Car):ResponseEntity<CarDTO>{
         val newMmdb = manufacturerModelRepository.findById(car.modelId)
-        val newCar = carRepository.save(car)
+        val newCar = carService.addCar(car)
         return ResponseEntity(newCar, HttpStatus.OK)
 
     }

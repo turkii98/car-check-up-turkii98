@@ -8,6 +8,7 @@ import java.util.UUID
 
 interface CarRepository: Repository<Car, UUID> {
     fun findById(id: UUID): Car
+
     fun save(car: Car) : Car
     fun findAll(pageable: Pageable): Page<Car>
 

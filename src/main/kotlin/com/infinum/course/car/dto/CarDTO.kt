@@ -7,4 +7,4 @@ data class CarDTO (
     val car:Car,
     var checkUps: MutableList<CarCheckUp> = mutableListOf(),
     var needCheckUp: Boolean = false
-)
+): java.io.Serializable

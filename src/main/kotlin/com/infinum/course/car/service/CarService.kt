@@ -1,20 +1,26 @@
 package com.infinum.course.car.service
 
 import com.infinum.course.car.dto.CarDTO
+import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
+import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.CachePut
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import java.util.*
+import org.springframework.cache.annotation.Cacheable
 
 @Service
 class CarService(
-    var jdbcTemplate: NamedParameterJdbcTemplate,
     private val carRepository: CarRepository,
     private val carCheckUpRepository: CarCheckUpRepository,
     private val carCheckUpSystemService: CarCheckUpSystemService){
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
+    @Cacheable("car")
     fun getCarDTO(id: UUID): CarDTO? {
         println(id)
         val newCar = carRepository.findById(id)
@@ -23,6 +29,16 @@ class CarService(
         newCarDTO.checkUps = list
         val checkNeccessary = carCheckUpSystemService.isCheckUpNecessary(id)
         newCarDTO.needCheckUp = checkNeccessary
+        println(newCarDTO)
+        logger.info("Caching car")
+        return newCarDTO
+    }
+
+    @CachePut("car")
+    fun addCar(car: Car): CarDTO? {
+        val newCar = carRepository.save(car)
+        val newCarDTO = CarDTO(newCar)
+        logger.info("Caching car")
         println(newCarDTO)
         return newCarDTO
     }
