@@ -1,5 +1,6 @@
 package com.infinum.course.carcheckup.entity
 
+import com.infinum.course.car.entity.Car
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -12,7 +13,10 @@ class CarCheckUp (
     val performedAt: LocalDateTime = LocalDateTime.now(),
     val workerName: String,
     val price: Long,
-    val carId: UUID
+
+    @ManyToOne
+    @JoinColumn(name="car_id",)
+    val car: Car
 )
 
 //class CarCheckUpNotFoundException(id: Long) : RuntimeException("Car check-up ID $id not found")

@@ -2,6 +2,7 @@ package com.infinum.course.carcheckup.repository
 
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
+import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -18,7 +19,7 @@ interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
             "join car on car.id = carcheckup.car_id \n" +
             "join manufacturermodel on manufacturermodel.id = car.model_id")
     fun findByManufacturer(): List<String>
-    fun save(carcheckup: CarCheckUp): CarCheckUp
+    fun save(carcheckup: CarCheckUpDTO): CarCheckUpDTO
     fun findByCarId(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
     fun findAllByCarId(carId: UUID): MutableList<CarCheckUp>
 
