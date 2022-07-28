@@ -2,6 +2,7 @@ package com.infinum.course.carcheckup.repository
 
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
+import com.infinum.course.carcheckup.CarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -16,7 +17,12 @@ interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
 
     @Query(nativeQuery = true, value = "select manufacturer from carcheckup join car on car.id = carcheckup.car_id")
     fun findByManufacturer(): List<String>
-    fun save(carcheckup: CarCheckUp): CarCheckUp
+
+    //@Query(nativeQuery = true, value = "select manufacturer, count(manufacturer) from carcheckup join car on car.id = carcheckup.car_id group by manufacturer")
+    //fun findByManufacturerr(): MutableMap<String, Long>
+
+    //fun findManufacturerCountManufacturerGroupByManufacturer(): MutableMap<String, Long>
+    fun save(carcheckup: CarCheckUpDTO): CarCheckUpDTO
     fun findByCarId(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
     fun findAllByCarId(carId: UUID): MutableList<CarCheckUp>
 

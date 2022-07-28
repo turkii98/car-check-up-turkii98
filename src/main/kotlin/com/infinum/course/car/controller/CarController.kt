@@ -36,13 +36,12 @@ class CarController (
     @GetMapping("/get-stats")
     @ResponseBody
     fun getStats(): ResponseEntity<Map<String, Long>> {
-
         return ResponseEntity(carCheckUpSystemService.countCheckUps(), HttpStatus.OK)
     }
 
-    @GetMapping("/get-car")
+    @GetMapping("/get-car/{id}")
     @ResponseBody
-    fun getCar(@RequestParam("id") id: UUID):ResponseEntity<CarDTO>{
+    fun getCar(@PathVariable("id") id: UUID):ResponseEntity<CarDTO>{
         return ResponseEntity(carService.getCarDTO(id), HttpStatus.OK)
     }
 

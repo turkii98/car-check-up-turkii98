@@ -14,7 +14,6 @@ import java.util.*
 
 @Service
 class CarService(
-    var jdbcTemplate: NamedParameterJdbcTemplate,
     private val carRepository: CarRepository,
     private val carCheckUpRepository: CarCheckUpRepository,
     private val carCheckUpSystemService: CarCheckUpSystemService){

@@ -18,6 +18,9 @@ class CarCheckUpSystemService (
 
 
     fun countCheckUps(): MutableMap<String,Long> {
+        //println(carCheckupRepository.findCarManufacturerCountCarManufacturerGroupByCarManufacturer())
+        //var mapa = carCheckupRepository.findByManufacturerr()
+
         var list = carCheckupRepository.findByManufacturer()
         var map = mutableMapOf<String,Long>()
         for (el in list) {

@@ -1,5 +1,6 @@
 package com.infinum.course.carcheckup.controller
 
+import com.infinum.course.carcheckup.CarCheckUpDTO
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
@@ -15,16 +16,16 @@ import java.util.UUID
 class CarCheckUpController (
 private val carCheckUpRepository: CarCheckUpRepository){
 
-    @GetMapping("/get-car-checkup")
+    @GetMapping("/get-car-checkup/{uuid}")
     @ResponseBody
-    fun findByCarId(pageable: Pageable, @RequestParam uuid: UUID) = ResponseEntity.ok(carCheckUpRepository.findByCarId(pageable, uuid))
+    fun findByCarId(pageable: Pageable, @PathVariable uuid: UUID) = ResponseEntity.ok(carCheckUpRepository.findByCarId(pageable, uuid))
 
     @PostMapping("/add-checkup")
     @ResponseBody
-    fun addCheckUp(@RequestBody checkUp: CarCheckUp):ResponseEntity<CarCheckUp>{
-        val newCheckUp = carCheckUpRepository.save(checkUp)
+    fun addCheckUp(@RequestBody carCheckUpRequest: CarCheckUpDTO):ResponseEntity<CarCheckUpDTO>{
+        val carCheckUpResponse = carCheckUpRepository.save(carCheckUpRequest)
         println(carCheckUpRepository.findAll())
-        return ResponseEntity(newCheckUp, HttpStatus.OK)
+        return ResponseEntity(carCheckUpResponse, HttpStatus.OK)
 
     }
 
