@@ -1,5 +1,6 @@
 package com.infinum.course.car.service
 
+import com.infinum.course.ManufacturerModel.ManufacturerModelNotFoundException
 import com.infinum.course.ManufacturerModel.repository.ManufacturerModelRepository
 import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.dto.CarRequestDTO
@@ -8,11 +9,8 @@ import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.slf4j.LoggerFactory
-import org.springframework.cache.annotation.CachePut
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
 import org.springframework.stereotype.Service
 import java.util.*
-import org.springframework.cache.annotation.Cacheable
 
 @Service
 class CarService(
@@ -37,7 +35,9 @@ class CarService(
     }
 
     fun addCar(carRequest: CarRequestDTO): Car? {
-        val newCarr = Car(manufacturerModel = manufacturerModelRepository.findById(carRequest.modelId),
+        val manuModel = manufacturerModelRepository.findById(carRequest.modelId)
+        if(!manufacturerModelRepository.existsByManufacturerAndModel(manuModel.manufacturer,manuModel.model )) throw ManufacturerModelNotFoundException()
+        val newCarr = Car(manufacturerModel = manuModel,
             productionYear = carRequest.productionYear,
             vin = carRequest.vin,
             id = carRequest.id,

@@ -20,12 +20,10 @@ class CarCheckUpSystemService (
 
 
     fun countCheckUps(): MutableMap<String,Long> {
-        var list = carCheckUpRepository.findByManufacturer()
-        var map = mutableMapOf<String,Long>()
-        for (el in list) {
-            if (map.putIfAbsent(el, 1) != null)
-            map.put(el, map[el]?.plus(1) ?: 1)
-            //map[el] = temp
+        val newList = carCheckUpRepository.findCarCheckUpCount()
+        val map = mutableMapOf<String,Long>()
+        newList.forEach {
+            map.put(key=it.manufacturer, value = it.count)
         }
         return map
     }

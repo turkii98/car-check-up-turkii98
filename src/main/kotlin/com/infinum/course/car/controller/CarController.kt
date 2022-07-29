@@ -1,6 +1,5 @@
 package com.infinum.course.carcheckup.controller
 
-import com.infinum.course.ManufacturerModel.repository.ManufacturerModelRepository
 import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.entity.Car
@@ -20,14 +19,12 @@ import org.springframework.data.domain.Pageable
 class CarController (
     private val carCheckUpSystemService: CarCheckUpSystemService,
     private val carRepository: CarRepository,
-    private val carService: CarService,
-    private val manufacturerModelRepository: ManufacturerModelRepository
+    private val carService: CarService
 ){
 
     @PostMapping("/add-car")
     @ResponseBody
     fun addCar(@RequestBody carRequest: CarRequestDTO):ResponseEntity<Car>{
-        val newMmdb = manufacturerModelRepository.findById(carRequest.modelId)
         val newCar = carService.addCar(carRequest)
         return ResponseEntity(newCar, HttpStatus.OK)
 
