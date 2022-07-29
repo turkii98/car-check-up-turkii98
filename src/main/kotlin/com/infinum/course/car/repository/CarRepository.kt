@@ -1,5 +1,6 @@
 package com.infinum.course.car.repository
 
+import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.entity.Car
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.Repository

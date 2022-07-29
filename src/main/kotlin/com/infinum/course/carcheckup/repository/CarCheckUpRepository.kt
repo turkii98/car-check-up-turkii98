@@ -19,7 +19,9 @@ interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
             "join car on car.id = carcheckup.car_id \n" +
             "join manufacturermodel on manufacturermodel.id = car.model_id")
     fun findByManufacturer(): List<String>
-    fun save(carcheckup: CarCheckUpDTO): CarCheckUpDTO
+
+    //fun findByManufacturerr(): List<String>
+    fun save(carcheckup: CarCheckUp): CarCheckUp
     fun findByCarId(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
     fun findAllByCarId(carId: UUID): MutableList<CarCheckUp>
 

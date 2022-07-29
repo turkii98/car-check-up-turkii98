@@ -19,14 +19,5 @@ class RestConfiguration {
 
     }
 
-    @Bean
-    fun provideWebClient(
-        webClientBuilder: WebClient.Builder,
-        @Value("\${car-manufacturer-service.base-url}")baseUrl: String
-        ): WebClient {
-            return webClientBuilder.baseUrl(baseUrl).build()
-    }
-
-
 
 }

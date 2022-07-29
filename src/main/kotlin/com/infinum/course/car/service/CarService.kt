@@ -1,6 +1,8 @@
 package com.infinum.course.car.service
 
+import com.infinum.course.ManufacturerModel.repository.ManufacturerModelRepository
 import com.infinum.course.car.dto.CarDTO
+import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
@@ -16,11 +18,11 @@ import org.springframework.cache.annotation.Cacheable
 class CarService(
     private val carRepository: CarRepository,
     private val carCheckUpRepository: CarCheckUpRepository,
-    private val carCheckUpSystemService: CarCheckUpSystemService){
+    private val carCheckUpSystemService: CarCheckUpSystemService,
+    private val manufacturerModelRepository: ManufacturerModelRepository){
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    @Cacheable("car")
     fun getCarDTO(id: UUID): CarDTO? {
         println(id)
         val newCar = carRepository.findById(id)
@@ -34,13 +36,17 @@ class CarService(
         return newCarDTO
     }
 
-    @CachePut("car")
-    fun addCar(car: Car): CarDTO? {
-        val newCar = carRepository.save(car)
-        val newCarDTO = CarDTO(newCar)
+    fun addCar(carRequest: CarRequestDTO): Car? {
+        val newCarr = Car(manufacturerModel = manufacturerModelRepository.findById(carRequest.modelId),
+            productionYear = carRequest.productionYear,
+            vin = carRequest.vin,
+            id = carRequest.id,
+            addedDate = carRequest.addedDate)
+        val newCar = carRepository.save(newCarr)
+        //val newCarDTO = CarDTO(newCar)
         logger.info("Caching car")
-        println(newCarDTO)
-        return newCarDTO
+        //println(newCarDTO)
+        return newCar
     }
 
 }

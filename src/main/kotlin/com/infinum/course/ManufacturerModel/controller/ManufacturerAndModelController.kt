@@ -15,7 +15,7 @@ class ManufacturerAndModelController(
     private val restTemplateManufacturerAndModelService: RestTemplateManufacturerAndModelService
 ) {
 
-    @GetMapping("/cars/1")
+    @GetMapping("/cars")
     fun getManufacturerAndModel(): ResponseEntity<List<ManufacturerModelDTO>> {
         val newManuAndModel = restTemplateManufacturerAndModelService.getModelAndManufacturer()
         restTemplateManufacturerAndModelService.updateManufacturerModel(newManuAndModel)

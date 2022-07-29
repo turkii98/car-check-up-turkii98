@@ -1,11 +1,8 @@
 package com.infinum.course.carcheckup.controller
 
-import com.infinum.course.car.CarCheckUpNotFoundException
-import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
-import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
@@ -18,24 +15,18 @@ import java.util.UUID
 
 @Controller
 class CarCheckUpController (
-private val carCheckUpRepository: CarCheckUpRepository,
-private val carRepository: CarRepository){
+private val carCheckUpSystemService: CarCheckUpSystemService){
 
     @GetMapping("/get-car-checkup/{uuid}")
     @ResponseBody
     fun findByCarId(pageable: Pageable, @PathVariable uuid: UUID):ResponseEntity<Page<CarCheckUp>> {
-        val newCar = carRepository.findById(uuid)
-        val zero: Long = 0
-        if(ResponseEntity.ok(carCheckUpRepository.findByCarId(pageable, uuid)).body.totalElements == zero) throw EmptyResultDataAccessException(0)
-        return ResponseEntity.ok(carCheckUpRepository.findByCarId(pageable, uuid))
+        return ResponseEntity.ok(carCheckUpSystemService.findCheckUpByCarId(pageable, uuid))
     }
 
     @PostMapping("/add-checkup")
     @ResponseBody
-    fun addCheckUp(@RequestBody carCheckUpRequest: CarCheckUpDTO):ResponseEntity<CarCheckUpDTO>{
-        val newCar = carRepository.findById(carCheckUpRequest.carId)
-        val carCheckUpResponse = carCheckUpRepository.save(carCheckUpRequest)
-        println(carCheckUpRepository.findAll())
+    fun addCheckUp(@RequestBody carCheckUpRequest: CarCheckUpDTO):ResponseEntity<CarCheckUp>{
+        val carCheckUpResponse = carCheckUpSystemService.addCheckUp(carCheckUpRequest)
         return ResponseEntity(carCheckUpResponse, HttpStatus.OK)
 
     }
