@@ -1,5 +1,6 @@
 package com.infinum.course.carcheckup.repository
 
+
 import com.infinum.course.carcheckup.dto.JpaQueryCountBean
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import org.springframework.data.domain.Page

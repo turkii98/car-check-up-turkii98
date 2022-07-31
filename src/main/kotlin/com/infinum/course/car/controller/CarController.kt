@@ -38,7 +38,6 @@ class CarController (
     @GetMapping("/get-stats")
     @ResponseBody
     fun getStats(): ResponseEntity<Map<String, Long>> {
-
         return ResponseEntity(carCheckUpSystemService.countCheckUps(), HttpStatus.OK)
     }
 
