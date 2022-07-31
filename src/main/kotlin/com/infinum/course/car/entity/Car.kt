@@ -1,5 +1,6 @@
 package com.infinum.course.car.entity
 
+import com.infinum.course.ManufacturerModel.entity.ManufacturerModel
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import java.time.LocalDate
 import java.util.*
@@ -14,9 +15,9 @@ class Car (
 
     val addedDate: LocalDate = LocalDate.now(),
 
-    val manufacturer: String,
-
-    val model: String,
+    @ManyToOne
+    @JoinColumn(name = "model_id")
+    val manufacturerModel: ManufacturerModel,
 
     val productionYear: String,
 

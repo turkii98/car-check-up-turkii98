@@ -1,11 +1,13 @@
 package com.infinum.course.carcheckup.controller
 
-import com.infinum.course.car.CarDTO
+import com.infinum.course.car.dto.CarDTO
+import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -22,8 +24,8 @@ class CarController (
 
     @PostMapping("/add-car")
     @ResponseBody
-    fun addCar(@RequestBody car: Car):ResponseEntity<Car>{
-        val newCar = carRepository.save(car)
+    fun addCar(@RequestBody carRequest: CarRequestDTO):ResponseEntity<Car>{
+        val newCar = carService.addCar(carRequest)
         return ResponseEntity(newCar, HttpStatus.OK)
 
     }
@@ -48,7 +50,15 @@ class CarController (
     @ExceptionHandler(value = [CarNotFoundException::class])
     fun handleException(ex: CarNotFoundException): ResponseEntity<String> {
         println("There is no such car")
+        println(ex.stackTrace)
         return ResponseEntity("No CheckUps for that car",HttpStatus.BAD_REQUEST)
+    }
+
+    @ExceptionHandler(value = [EmptyResultDataAccessException::class])
+    fun handleException(ex: EmptyResultDataAccessException): ResponseEntity<String> {
+        println("There is no such model")
+        println(ex.printStackTrace())
+        return ResponseEntity("No such model",HttpStatus.BAD_REQUEST)
     }
 
 }

@@ -1,8 +1,7 @@
-package com.infinum.course.carcheckup
+package com.infinum.course.carcheckup.dto
 
 import java.time.LocalDateTime
-import java.util.UUID
-
+import java.util.*
 
 class CarCheckUpDTO (
     val id: Long = (Math.random()*1000).toLong(),
