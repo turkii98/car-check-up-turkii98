@@ -1,34 +1,53 @@
 package com.infinum.course.carcheckup.controller
 
 
+import com.infinum.course.car.entity.Car
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
+import com.infinum.course.carcheckup.dto.CarCheckUpResource
+import com.infinum.course.carcheckup.dto.CarCheckUpResourceAssembler
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedResourcesAssembler
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.lang.Exception
 import java.util.UUID
 
 @Controller
+@RequestMapping("/carcheckup")
 class CarCheckUpController (
-private val carCheckUpSystemService: CarCheckUpSystemService){
+private val carCheckUpSystemService: CarCheckUpSystemService,
+private val carCheckUpResourceAssembler: CarCheckUpResourceAssembler){
 
-    @GetMapping("/get-car-checkup/{uuid}")
+    @GetMapping("/{uuid}")
     @ResponseBody
-    fun findByCarId(pageable: Pageable, @PathVariable uuid: UUID):ResponseEntity<Page<CarCheckUp>> {
-        return ResponseEntity.ok(carCheckUpSystemService.findCheckUpByCarId(pageable, uuid))
+    fun findByCarId(
+        pageable: Pageable, @PathVariable uuid: UUID,
+        pagedResourcesAssembler: PagedResourcesAssembler<CarCheckUp>,
+        @RequestParam order: String
+    ):ResponseEntity<PagedModel<CarCheckUpResource>> {
+        return ResponseEntity.ok(carCheckUpSystemService.findCheckUpByCarSorted(pageable, uuid, order))
     }
 
-    @PostMapping("/add-checkup")
+    @PostMapping()
     @ResponseBody
-    fun addCheckUp(@RequestBody carCheckUpRequest: CarCheckUpDTO):ResponseEntity<CarCheckUp>{
+    fun addCheckUp(
+        @RequestBody carCheckUpRequest: CarCheckUpDTO
+    ):ResponseEntity<CarCheckUpResource>{
         val carCheckUpResponse = carCheckUpSystemService.addCheckUp(carCheckUpRequest)
-        return ResponseEntity(carCheckUpResponse, HttpStatus.OK)
+        val location = ServletUriComponentsBuilder.fromCurrentRequest()
+            .path("/{id}")
+            .buildAndExpand(mapOf("id" to carCheckUpResponse?.id))
+            .toUri()
+        return ResponseEntity.created(location).body(carCheckUpResourceAssembler.toModel(carCheckUpResponse))
 
     }
 

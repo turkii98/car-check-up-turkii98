@@ -20,6 +20,8 @@ interface CarCheckUpRepository : JpaRepository<CarCheckUp, Long>{
 
     fun save(carcheckup: CarCheckUp): CarCheckUp
     fun findByCarId(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
+    fun findByCarIdOrderByPerformedAtAsc(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
+    fun findByCarIdOrderByPerformedAtDesc(pageable: Pageable, uuid: UUID): Page<CarCheckUp>
     fun findAllByCarId(carId: UUID): MutableList<CarCheckUp>
 
     //fun deleteAll()

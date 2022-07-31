@@ -8,7 +8,9 @@ import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException.BadRequest
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -57,5 +59,18 @@ class CarCheckUpSystemService (
         val newCar = carRepository.findById(carId)
         return carCheckUpRepository.findByCarId(pageable, carId)
     }
+
+    fun findCheckUpByCarSorted(pageable: Pageable, carId: UUID, order:String): Page<CarCheckUp> {
+        val newCar = carRepository.findById(carId)
+        if(order == "asc")
+            return carCheckUpRepository.findByCarIdOrderByPerformedAtAsc(pageable, carId)
+        else if(order == "desc")
+            return carCheckUpRepository.findByCarIdOrderByPerformedAtDesc(pageable, carId)
+        else
+            throw Exception()
+        return carCheckUpRepository.findByCarId(pageable, carId)
+
+    }
+
 
 }

@@ -2,10 +2,12 @@ package com.infinum.course.car.repository
 
 import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.entity.Car
+import com.infinum.course.carcheckup.CarNotFoundException
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.Repository
 import org.springframework.data.domain.Pageable
 import java.util.UUID
+import kotlin.jvm.Throws
 
 interface CarRepository: Repository<Car, UUID> {
     fun findById(id: UUID): Car

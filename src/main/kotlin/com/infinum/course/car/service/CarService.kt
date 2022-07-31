@@ -9,6 +9,8 @@ import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -34,7 +36,7 @@ class CarService(
         return newCarDTO
     }
 
-    fun addCar(carRequest: CarRequestDTO): Car? {
+    fun addCar(carRequest: CarRequestDTO): Car {
         val manuModel = manufacturerModelRepository.findById(carRequest.modelId)
         if(!manufacturerModelRepository.existsByManufacturerAndModel(manuModel.manufacturer,manuModel.model )) throw ManufacturerModelNotFoundException()
         val newCarr = Car(manufacturerModel = manuModel,
@@ -48,5 +50,15 @@ class CarService(
         //println(newCarDTO)
         return newCar
     }
+
+    fun getCar(id: UUID): Car {
+        return carRepository.findById(id)
+    }
+
+    fun getAllCars(pageable: Pageable): Page<Car> {
+        return carRepository.findAll(pageable)
+    }
+
+
 
 }
