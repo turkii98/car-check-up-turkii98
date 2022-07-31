@@ -2,14 +2,23 @@ package com.infinum.course.car.entity
 
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import java.time.LocalDate
+import java.util.*
+import javax.persistence.*
 
-data class Car (
-    val id: Long=123,
-    val addedDate: LocalDate= LocalDate.now(),
+@Entity
+@Table(name = "car")
+class Car (
+
+    @Id
+    val id: UUID = UUID.randomUUID(),
+
+    val addedDate: LocalDate = LocalDate.now(),
+
     val manufacturer: String,
+
     val model: String,
+
     val productionYear: String,
+
     val vin: String,
-
-
-)
+    )
