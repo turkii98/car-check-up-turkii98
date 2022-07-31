@@ -1,7 +1,4 @@
 package com.infinum.course.carcheckup.controller
-
-
-import com.infinum.course.car.entity.Car
 import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.dto.CarCheckUpResource
@@ -9,7 +6,6 @@ import com.infinum.course.carcheckup.dto.CarCheckUpResourceAssembler
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.PagedModel
@@ -18,7 +14,6 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-import java.lang.Exception
 import java.util.UUID
 
 @Controller
@@ -34,7 +29,7 @@ private val carCheckUpResourceAssembler: CarCheckUpResourceAssembler){
         pagedResourcesAssembler: PagedResourcesAssembler<CarCheckUp>,
         @RequestParam order: String
     ):ResponseEntity<PagedModel<CarCheckUpResource>> {
-        return ResponseEntity.ok(carCheckUpSystemService.findCheckUpByCarSorted(pageable, uuid, order))
+        return ResponseEntity.ok(pagedResourcesAssembler.toModel(carCheckUpSystemService.findCheckUpByCarSorted(pageable, uuid, order), carCheckUpResourceAssembler))
     }
 
     @PostMapping()
@@ -45,7 +40,7 @@ private val carCheckUpResourceAssembler: CarCheckUpResourceAssembler){
         val carCheckUpResponse = carCheckUpSystemService.addCheckUp(carCheckUpRequest)
         val location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(mapOf("id" to carCheckUpResponse?.id))
+            .buildAndExpand(mapOf("id" to carCheckUpResponse.id))
             .toUri()
         return ResponseEntity.created(location).body(carCheckUpResourceAssembler.toModel(carCheckUpResponse))
 

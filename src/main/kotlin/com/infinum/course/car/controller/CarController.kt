@@ -1,16 +1,11 @@
 package com.infinum.course.carcheckup.controller
-
-import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.dto.CarResource
 import com.infinum.course.car.dto.CarResourceAssembler
 import com.infinum.course.car.entity.Car
-import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
-import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
-import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
@@ -20,13 +15,10 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.PagedModel
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder
-import java.net.URI
 
 @Controller
 @RequestMapping("/car")
 class CarController (
-    private val carCheckUpSystemService: CarCheckUpSystemService,
-    private val carRepository: CarRepository,
     private val carService: CarService,
     private val carResourceAssembler: CarResourceAssembler
 ){
@@ -37,7 +29,7 @@ class CarController (
         val newCar = carService.addCar(carRequest)
         val location = ServletUriComponentsBuilder.fromCurrentRequest()
             .path("/{id}")
-            .buildAndExpand(mapOf("id" to newCar?.id))
+            .buildAndExpand(mapOf("id" to newCar.id))
             .toUri()
         return ResponseEntity.created(location).body(carResourceAssembler.toModel(newCar))
     }
@@ -58,9 +50,8 @@ class CarController (
     fun getCar(
         @PathVariable("id") id: UUID
         ):ResponseEntity<CarResource>{
-        var a= ResponseEntity(carResourceAssembler.toModel(carService.getCar(id)), HttpStatus.OK)
-        a.body.needCheckUp=false
-        return a
+
+        return carService.checkUpNeccessary(id)
     }
 
     @ExceptionHandler(value = [CarNotFoundException::class])

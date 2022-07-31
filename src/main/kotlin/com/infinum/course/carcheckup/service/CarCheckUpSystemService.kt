@@ -1,16 +1,11 @@
 package com.infinum.course.carcheckup.service
-
-
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
-
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.client.HttpClientErrorException.BadRequest
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -67,8 +62,7 @@ class CarCheckUpSystemService (
         else if(order == "desc")
             return carCheckUpRepository.findByCarIdOrderByPerformedAtDesc(pageable, carId)
         else
-            throw Exception()
-        return carCheckUpRepository.findByCarId(pageable, carId)
+            return carCheckUpRepository.findByCarId(pageable, carId)
 
     }
 
