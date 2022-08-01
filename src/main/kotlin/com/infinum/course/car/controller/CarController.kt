@@ -34,14 +34,14 @@ class CarController (
         return ResponseEntity.created(location).body(carResourceAssembler.toModel(newCar))
     }
 
-    @GetMapping
+    @GetMapping()
     @ResponseBody
     fun getCars(
         pageable: Pageable,
         pagedResourcesAssembler: PagedResourcesAssembler<Car>
     ): ResponseEntity<PagedModel<CarResource>>
     {
-        return ResponseEntity.ok(pagedResourcesAssembler.toModel(carService.getAllCars(pageable), carResourceAssembler))
+        return carService.getAllCars(pageable, pagedResourcesAssembler)
     }
 
 

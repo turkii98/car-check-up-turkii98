@@ -11,8 +11,9 @@ import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.slf4j.LoggerFactory
-import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedResourcesAssembler
+import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -41,6 +42,7 @@ class CarService(
         return response
     }
 
+
     fun getCarDTO(id: UUID): CarDTO? {
         println(id)
         val newCar = carRepository.findById(id)
@@ -63,9 +65,7 @@ class CarService(
             id = carRequest.id,
             addedDate = carRequest.addedDate)
         val newCar = carRepository.save(newCarr)
-        //val newCarDTO = CarDTO(newCar)
         logger.info("Caching car")
-        //println(newCarDTO)
         return newCar
     }
 
@@ -73,9 +73,20 @@ class CarService(
         return carRepository.findById(id)
     }
 
-    fun getAllCars(pageable: Pageable): Page<Car> {
-        return carRepository.findAll(pageable)
+    fun getAllCars(pageable: Pageable, pagedResourcesAssembler: PagedResourcesAssembler<Car>): ResponseEntity<PagedModel<CarResource>> {
+        var responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(carRepository.findAll(pageable), carResourceAssembler))
+        responseUpdatedNeedCheckUp.body.content.forEach {
+            try {
+                it.needCheckUp = checkUpNeccessary(it.id)?.body?.needCheckUp ?: true //throws NoSuchElementException when there are no checkups for a car
+            }
+            catch (exc: NoSuchElementException) {
+                it.needCheckUp = true
+            }
+        }
+        return responseUpdatedNeedCheckUp
     }
+
+
 
 
 

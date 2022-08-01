@@ -2,7 +2,6 @@ package com.infinum.course.car.dto
 
 import com.infinum.course.ManufacturerModel.controller.ManufacturerModelController
 import com.infinum.course.car.entity.Car
-import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.controller.CarCheckUpController
 import com.infinum.course.carcheckup.controller.CarController
 import com.infinum.course.carcheckup.entity.CarCheckUp
@@ -42,7 +41,8 @@ class CarResourceAssembler: RepresentationModelAssemblerSupport<Car, CarResource
             addedDate = entity.addedDate,
             modelId = entity.manufacturerModel.id,
             productionYear = entity.productionYear,
-            vin = entity.vin
+            vin = entity.vin,
+            needCheckUp = true
         )
     }
 }
@@ -53,5 +53,5 @@ data class CarResource(
     val modelId: UUID,
     val productionYear : String,
     val vin: String,
-    var needCheckUp : Boolean = true
+    var needCheckUp : Boolean
 ): RepresentationModel<CarResource>()
