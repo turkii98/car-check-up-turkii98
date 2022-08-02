@@ -1,5 +1,6 @@
 package com.infinum.course.car.repository
 
+import com.infinum.course.ManufacturerModel.entity.ManufacturerModel
 import com.infinum.course.car.entity.Car
 import org.springframework.data.domain.Page
 import org.springframework.data.repository.Repository
@@ -15,6 +16,7 @@ interface CarRepository: Repository<Car, UUID> {
     fun deleteAll()
 
     fun saveAll(car: Iterable<Car>): Iterable<Car>
+    fun findByManufacturerModel(pageable: Pageable,manufacturerModel: ManufacturerModel): Page<Car>
 
 }
 

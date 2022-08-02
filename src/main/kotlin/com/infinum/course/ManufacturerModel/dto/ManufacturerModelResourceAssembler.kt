@@ -2,6 +2,10 @@ package com.infinum.course.ManufacturerModel.dto
 
 import com.infinum.course.ManufacturerModel.controller.ManufacturerModelController
 import com.infinum.course.ManufacturerModel.entity.ManufacturerModel
+import com.infinum.course.car.entity.Car
+import com.infinum.course.carcheckup.controller.CarController
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.RepresentationModel
 import org.springframework.hateoas.server.mvc.RepresentationModelAssemblerSupport
 import org.springframework.hateoas.server.mvc.linkTo
@@ -14,9 +18,9 @@ class ManufacturerModelResourceAssembler: RepresentationModelAssemblerSupport<Ma
     override fun toModel(entity: ManufacturerModel): ManufacturerModelResource {
         return createModelWithId(entity.id, entity).apply {
             add(
-                linkTo<ManufacturerModelController> {
-                    getManufacturerAndModel()
-                }.withRel("other_manufacturer_models")
+                linkTo<CarController> {
+                    getCarsOfModel(entity.id, pageable = Pageable.unpaged(), pagedResourcesAssembler = PagedResourcesAssembler<Car>(null, null))
+                }.withRel("carsOfThisModel")
             )
         }
     }

@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
 import java.util.UUID
+import org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
+import java.net.URI
 
 @Controller
 @RequestMapping("/carcheckup")
@@ -38,10 +40,9 @@ private val carCheckUpResourceAssembler: CarCheckUpResourceAssembler){
         @RequestBody carCheckUpRequest: CarCheckUpDTO
     ):ResponseEntity<CarCheckUpResource>{
         val carCheckUpResponse = carCheckUpSystemService.addCheckUp(carCheckUpRequest)
-        val location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(mapOf("id" to carCheckUpResponse.id))
-            .toUri()
+        val pageable = Pageable.unpaged()
+        val pagedResourcesAssembler = PagedResourcesAssembler<CarCheckUp>(null, null)
+        val location: URI = linkTo(methodOn(CarCheckUpController::class.java).findByCarId(pageable,carCheckUpResponse.car.id, pagedResourcesAssembler, "asc")).toUri()
         return ResponseEntity.created(location).body(carCheckUpResourceAssembler.toModel(carCheckUpResponse))
 
     }

@@ -46,7 +46,6 @@ class CarCheckUpSystemService (
             car = newCar
         )
         val carCheckUpResponse = carCheckUpRepository.save(newCheckUp)
-        println(carCheckUpRepository.findAll())
         return carCheckUpResponse
     }
 
@@ -54,6 +53,8 @@ class CarCheckUpSystemService (
         val newCar = carRepository.findById(carId)
         return carCheckUpRepository.findByCarId(pageable, carId)
     }
+
+    fun getCheckUp(id: Long) = carCheckUpRepository.findById(id)
 
     fun findCheckUpByCarSorted(pageable: Pageable, carId: UUID, order:String): Page<CarCheckUp> {
         val newCar = carRepository.findById(carId)

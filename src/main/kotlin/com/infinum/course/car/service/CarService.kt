@@ -11,8 +11,8 @@ import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.slf4j.LoggerFactory
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -30,15 +30,10 @@ class CarService(
     ){
 
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val noPageable = Pageable.unpaged()
-
     fun checkUpNeccessary(id: UUID): ResponseEntity<CarResource> {
         val response = ResponseEntity(carResourceAssembler.toModel(getCar(id)), HttpStatus.OK)
-        response.body?.needCheckUp = carCheckUpSystemService.findCheckUpByCarSorted(noPageable, id, "desc")
-            .get()
-            .findFirst()
-            .get().performedAt
-            .isBefore(LocalDateTime.now().minusYears(1))
+        response.body?.needCheckUp = carCheckUpRepository
+            .existsByCarAndPerformedAtBefore(carRepository.findById(response.body.id), LocalDateTime.now().minusYears(1))
         return response
     }
 
@@ -73,15 +68,21 @@ class CarService(
         return carRepository.findById(id)
     }
 
-    fun getAllCars(pageable: Pageable, pagedResourcesAssembler: PagedResourcesAssembler<Car>): ResponseEntity<PagedModel<CarResource>> {
-        var responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(carRepository.findAll(pageable), carResourceAssembler))
-        responseUpdatedNeedCheckUp.body.content.forEach {
-            try {
-                it.needCheckUp = checkUpNeccessary(it.id)?.body?.needCheckUp ?: true //throws NoSuchElementException when there are no checkups for a car
-            }
-            catch (exc: NoSuchElementException) {
+    fun getAllCars(pageable: Pageable): Page<Car> {
+        return carRepository.findAll(pageable)
+    }
+
+    fun getCarsOfModel(pageable: Pageable, modelId: UUID): Page<Car> {
+        return carRepository.findByManufacturerModel(pageable,manufacturerModelRepository.findById(modelId))
+    }
+
+    fun allCarsValidated(responseUpdatedNeedCheckUp: ResponseEntity<PagedModel<CarResource>>): ResponseEntity<PagedModel<CarResource>> {
+        responseUpdatedNeedCheckUp.body?.content?.forEach {
+            if(carCheckUpRepository.existsByCar(Car(it.id, it.addedDate, manufacturerModelRepository.findById(it.modelId), it.productionYear, it.vin)))
+                it.needCheckUp = checkUpNeccessary(it.id).body.needCheckUp
+            else
                 it.needCheckUp = true
-            }
+
         }
         return responseUpdatedNeedCheckUp
     }

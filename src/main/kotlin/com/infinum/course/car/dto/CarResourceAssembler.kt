@@ -30,7 +30,7 @@ class CarResourceAssembler: RepresentationModelAssemblerSupport<Car, CarResource
                 }.withRel("checkups"),
                 linkTo<ManufacturerModelController> {
                     getManuAndModel(entity.manufacturerModel.id)
-                }.withRel("manufacturer_and_model")
+                }.withRel("manufacturerAndModel")
             )
         }
     }

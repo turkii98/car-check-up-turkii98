@@ -14,7 +14,9 @@ import java.util.*
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedResourcesAssembler
 import org.springframework.hateoas.PagedModel
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
+import java.net.URI
 
 @Controller
 @RequestMapping("/car")
@@ -27,10 +29,7 @@ class CarController (
     @ResponseBody
     fun addCar(@RequestBody carRequest: CarRequestDTO):ResponseEntity<CarResource>{
         val newCar = carService.addCar(carRequest)
-        val location = ServletUriComponentsBuilder.fromCurrentRequest()
-            .path("/{id}")
-            .buildAndExpand(mapOf("id" to newCar.id))
-            .toUri()
+        val location: URI = linkTo(methodOn(CarController::class.java).getCar(newCar.id)).toUri()
         return ResponseEntity.created(location).body(carResourceAssembler.toModel(newCar))
     }
 
@@ -41,7 +40,9 @@ class CarController (
         pagedResourcesAssembler: PagedResourcesAssembler<Car>
     ): ResponseEntity<PagedModel<CarResource>>
     {
-        return carService.getAllCars(pageable, pagedResourcesAssembler)
+        val cars = carService.getAllCars(pageable)
+        val responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(cars, carResourceAssembler))
+        return carService.allCarsValidated(responseUpdatedNeedCheckUp)
     }
 
 
@@ -52,6 +53,19 @@ class CarController (
         ):ResponseEntity<CarResource>{
 
         return carService.checkUpNeccessary(id)
+    }
+
+    @GetMapping("/model/{id}")
+    @ResponseBody
+    fun getCarsOfModel(
+        @PathVariable("id") id: UUID,
+        pageable: Pageable,
+        pagedResourcesAssembler: PagedResourcesAssembler<Car>
+    ): ResponseEntity<PagedModel<CarResource>>
+    {
+        val cars = carService.getCarsOfModel(pageable, id)
+        val responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(cars, carResourceAssembler))
+        return carService.allCarsValidated(responseUpdatedNeedCheckUp)
     }
 
     @ExceptionHandler(value = [CarNotFoundException::class])
