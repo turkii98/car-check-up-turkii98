@@ -7,6 +7,4 @@ import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
 @EnableScheduling
-class SchedulerConfiguration(private val restTemplateManufacturerAndModelService: RestTemplateManufacturerAndModelService){
-
-}
+class SchedulerConfiguration(private val restTemplateManufacturerAndModelService: RestTemplateManufacturerAndModelService)
