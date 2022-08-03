@@ -72,6 +72,7 @@ class CarService(
     @Transactional
     fun deleteCar(id: UUID): String {
         if(carRepository.existsById(id)){
+            carCheckUpRepository.deleteByCar(carRepository.findById(id))
             carRepository.deleteCarById(id)
             return "Deleted Succesfully"
         }

@@ -31,6 +31,8 @@ interface CarCheckUpRepository : Repository<CarCheckUp, Long> {
 
     fun deleteCarCheckUpById(id:Long)
 
+    fun deleteByCar(car: Car)
+
     fun existsById(id:Long): Boolean
 
     //fun deleteAll()
