@@ -70,14 +70,14 @@ class CarService(
     }
 
     @Transactional
-    fun deleteCar(id: UUID): String {
+    fun deleteCar(id: UUID): HttpStatus {
         if(carRepository.existsById(id)){
             carCheckUpRepository.deleteByCar(carRepository.findById(id))
             carRepository.deleteCarById(id)
-            return "Deleted Succesfully"
+            return HttpStatus.NO_CONTENT
         }
         else
-            return "No such car"
+            return HttpStatus.BAD_REQUEST
 
     }
 

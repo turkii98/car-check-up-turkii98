@@ -2,7 +2,6 @@ package com.infinum.course.carcheckup.controller
 import com.infinum.course.car.dto.CarRequestDTO
 import com.infinum.course.car.dto.CarResource
 import com.infinum.course.car.dto.CarResourceAssembler
-import com.infinum.course.car.dto.deleteCarDTO
 import com.infinum.course.car.entity.Car
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
@@ -45,13 +44,13 @@ class CarController (
         return carService.allCarsValidated(responseUpdatedNeedCheckUp)
     }
 
-    @DeleteMapping()
+    @DeleteMapping("/{id}")
     @ResponseBody
     fun deleteCar(
-        @RequestBody carId: deleteCarDTO
-    ): ResponseEntity<String>{
-        val response = carService.deleteCar(carId.carId)
-        return ResponseEntity.ok(response)
+        @PathVariable id: UUID
+    ): ResponseEntity<HttpStatus>{
+        val response = carService.deleteCar(id)
+        return ResponseEntity(response)
     }
 
 

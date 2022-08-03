@@ -3,7 +3,6 @@ import com.infinum.course.carcheckup.CarNotFoundException
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.dto.CarCheckUpResource
 import com.infinum.course.carcheckup.dto.CarCheckUpResourceAssembler
-import com.infinum.course.carcheckup.dto.DeleteCarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
 import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
@@ -47,13 +46,13 @@ private val carCheckUpResourceAssembler: CarCheckUpResourceAssembler){
 
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseBody
     fun deleteCheckUp(
-        @RequestBody deleteCarCheckUpDTO: DeleteCarCheckUpDTO
-    ): ResponseEntity<String> {
-        val response = carCheckUpSystemService.deleteCheckUp(deleteCarCheckUpDTO.id)
-        return ResponseEntity.ok(response)
+        @PathVariable id: Long
+    ): ResponseEntity<HttpStatus> {
+        val response = carCheckUpSystemService.deleteCheckUp(id)
+        return ResponseEntity(response)
     }
 
     @ExceptionHandler(value = [(CarNotFoundException::class)])
