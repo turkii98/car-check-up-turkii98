@@ -22,7 +22,6 @@ class RestTemplateManufacturerAndModelService(
         restTemplate
             .getForObject<ManufacturerResponse>("/api/v1/cars/1")
             .cars.forEach {
-                //println("it "+ it)
                 lista.add(ManufacturerModelDTO(models = it.models, manufacturer = it.manufacturer))
             }
         println(lista)

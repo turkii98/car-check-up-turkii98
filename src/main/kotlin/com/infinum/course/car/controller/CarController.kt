@@ -1,12 +1,10 @@
 package com.infinum.course.carcheckup.controller
-
-import com.infinum.course.car.dto.CarDTO
 import com.infinum.course.car.dto.CarRequestDTO
+import com.infinum.course.car.dto.CarResource
+import com.infinum.course.car.dto.CarResourceAssembler
 import com.infinum.course.car.entity.Car
-import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.car.service.CarService
 import com.infinum.course.carcheckup.CarNotFoundException
-import com.infinum.course.carcheckup.service.CarCheckUpSystemService
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,37 +12,60 @@ import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PagedResourcesAssembler
+import org.springframework.hateoas.PagedModel
+import org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
+import java.net.URI
 
 @Controller
+@RequestMapping("/car")
 class CarController (
-    private val carCheckUpSystemService: CarCheckUpSystemService,
-    private val carRepository: CarRepository,
-    private val carService: CarService
+    private val carService: CarService,
+    private val carResourceAssembler: CarResourceAssembler
 ){
 
-    @PostMapping("/add-car")
+    @PostMapping
     @ResponseBody
-    fun addCar(@RequestBody carRequest: CarRequestDTO):ResponseEntity<Car>{
+    fun addCar(@RequestBody carRequest: CarRequestDTO):ResponseEntity<CarResource>{
         val newCar = carService.addCar(carRequest)
-        return ResponseEntity(newCar, HttpStatus.OK)
-
+        val location: URI = linkTo(methodOn(CarController::class.java).getCar(newCar.id)).toUri()
+        return ResponseEntity.created(location).body(carResourceAssembler.toModel(newCar))
     }
 
-    @GetMapping("/get-cars")
+    @GetMapping()
     @ResponseBody
-    fun getCars(pageable: Pageable) = ResponseEntity.ok(carRepository.findAll(pageable))
-
-
-    @GetMapping("/get-stats")
-    @ResponseBody
-    fun getStats(): ResponseEntity<Map<String, Long>> {
-        return ResponseEntity(carCheckUpSystemService.countCheckUps(), HttpStatus.OK)
+    fun getCars(
+        pageable: Pageable,
+        pagedResourcesAssembler: PagedResourcesAssembler<Car>
+    ): ResponseEntity<PagedModel<CarResource>>
+    {
+        val cars = carService.getAllCars(pageable)
+        val responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(cars, carResourceAssembler))
+        return carService.allCarsValidated(responseUpdatedNeedCheckUp)
     }
 
-    @GetMapping("/get-car/{id}")
+
+    @GetMapping("/{id}")
     @ResponseBody
-    fun getCar(@PathVariable("id") id: UUID):ResponseEntity<CarDTO>{
-        return ResponseEntity(carService.getCarDTO(id), HttpStatus.OK)
+    fun getCar(
+        @PathVariable("id") id: UUID
+        ):ResponseEntity<CarResource>{
+
+        return carService.checkUpNeccessary(id)
+    }
+
+    @GetMapping("/model/{id}")
+    @ResponseBody
+    fun getCarsOfModel(
+        @PathVariable("id") id: UUID,
+        pageable: Pageable,
+        pagedResourcesAssembler: PagedResourcesAssembler<Car>
+    ): ResponseEntity<PagedModel<CarResource>>
+    {
+        val cars = carService.getCarsOfModel(pageable, id)
+        val responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(cars, carResourceAssembler))
+        return carService.allCarsValidated(responseUpdatedNeedCheckUp)
     }
 
     @ExceptionHandler(value = [CarNotFoundException::class])

@@ -1,10 +1,7 @@
 package com.infinum.course.carcheckup.service
-
-
 import com.infinum.course.car.repository.CarRepository
 import com.infinum.course.carcheckup.dto.CarCheckUpDTO
 import com.infinum.course.carcheckup.entity.CarCheckUp
-
 import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -49,7 +46,6 @@ class CarCheckUpSystemService (
             car = newCar
         )
         val carCheckUpResponse = carCheckUpRepository.save(newCheckUp)
-        println(carCheckUpRepository.findAll())
         return carCheckUpResponse
     }
 
@@ -57,5 +53,19 @@ class CarCheckUpSystemService (
         val newCar = carRepository.findById(carId)
         return carCheckUpRepository.findByCarId(pageable, carId)
     }
+
+    fun getCheckUp(id: Long) = carCheckUpRepository.findById(id)
+
+    fun findCheckUpByCarSorted(pageable: Pageable, carId: UUID, order:String): Page<CarCheckUp> {
+        val newCar = carRepository.findById(carId)
+        if(order == "asc")
+            return carCheckUpRepository.findByCarIdOrderByPerformedAtAsc(pageable, carId)
+        else if(order == "desc")
+            return carCheckUpRepository.findByCarIdOrderByPerformedAtDesc(pageable, carId)
+        else
+            return carCheckUpRepository.findByCarId(pageable, carId)
+
+    }
+
 
 }
