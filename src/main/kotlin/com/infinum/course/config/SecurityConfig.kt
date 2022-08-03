@@ -24,13 +24,13 @@ class SecurityConfig {
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
             authorizeRequests {
-                authorize(HttpMethod.GET,"/car/{id}", hasRole("USER"), hasRole("ADMIN"))
-                authorize(HttpMethod.POST,"/car", hasRole("USER") , hasRole("ADMIN"))
-                authorize(HttpMethod.GET,"/car", hasRole("ADMIN"))
-                authorize(HttpMethod.GET,"/carcheckup/{uuid}", hasRole("USER"), hasRole("ADMIN"))
-                authorize(HttpMethod.POST,"/carcheckup", hasRole("ADMIN"))
-                authorize(HttpMethod.DELETE, "/car", hasRole("ADMIN"))
-                authorize(HttpMethod.DELETE, "/carcheckup", hasRole("ADMIN"))
+                authorize(HttpMethod.GET,"/car/{id}", hasAuthority("SCOPE_USER"), hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.POST,"/car", hasAuthority("SCOPE_USER") , hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.GET,"/car", hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.GET,"/carcheckup/{uuid}", hasAuthority("SCOPE_USER"), hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.POST,"/carcheckup", hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.DELETE, "/car", hasAuthority("SCOPE_ADMIN"))
+                authorize(HttpMethod.DELETE, "/carcheckup", hasAuthority("SCOPE_ADMIN"))
                 authorize("/stats", permitAll)
                 authorize(anyRequest, authenticated)
             }
