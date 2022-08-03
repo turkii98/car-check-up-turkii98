@@ -6,6 +6,7 @@ import com.infinum.course.carcheckup.repository.CarCheckUpRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -49,6 +50,16 @@ class CarCheckUpSystemService (
         return carCheckUpResponse
     }
 
+    @Transactional
+    fun deleteCheckUp(id:Long): String{
+        if(carCheckUpRepository.existsById(id)){
+            carCheckUpRepository.deleteCarCheckUpById(id)
+            return "Succesfully deleted"
+        }
+        else
+            return "No such checkup"
+
+    }
     fun findCheckUpByCarId(pageable: Pageable, carId: UUID): Page<CarCheckUp> {
         val newCar = carRepository.findById(carId)
         return carCheckUpRepository.findByCarId(pageable, carId)
