@@ -8,7 +8,6 @@ import com.infinum.course.carcheckup.CarNotFoundException
 import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
 import java.util.*
 import org.springframework.data.domain.Pageable
@@ -18,7 +17,7 @@ import org.springframework.hateoas.server.core.DummyInvocationUtils.methodOn
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo
 import java.net.URI
 
-@Controller
+@RestController
 @RequestMapping("/car")
 class CarController (
     private val carService: CarService,
@@ -43,6 +42,15 @@ class CarController (
         val cars = carService.getAllCars(pageable)
         val responseUpdatedNeedCheckUp = ResponseEntity.ok(pagedResourcesAssembler.toModel(cars, carResourceAssembler))
         return carService.allCarsValidated(responseUpdatedNeedCheckUp)
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseBody
+    fun deleteCar(
+        @PathVariable id: UUID
+    ): ResponseEntity<HttpStatus>{
+        val response = carService.deleteCar(id)
+        return ResponseEntity(response)
     }
 
 

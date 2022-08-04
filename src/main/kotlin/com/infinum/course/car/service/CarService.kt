@@ -17,6 +17,7 @@ import org.springframework.hateoas.PagedModel
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.util.*
 
@@ -66,6 +67,18 @@ class CarService(
 
     fun getCar(id: UUID): Car {
         return carRepository.findById(id)
+    }
+
+    @Transactional
+    fun deleteCar(id: UUID): HttpStatus {
+        if(carRepository.existsById(id)){
+            carCheckUpRepository.deleteByCar(carRepository.findById(id))
+            carRepository.deleteCarById(id)
+            return HttpStatus.NO_CONTENT
+        }
+        else
+            return HttpStatus.BAD_REQUEST
+
     }
 
     fun getAllCars(pageable: Pageable): Page<Car> {
