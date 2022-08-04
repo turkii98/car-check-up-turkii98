@@ -13,7 +13,9 @@ interface CarRepository: Repository<Car, UUID> {
     fun save(car: Car) : Car
     fun findAll(pageable: Pageable): Page<Car>
 
-    fun deleteAll()
+    fun deleteCarById(id: UUID): String
+
+    fun existsById(id: UUID): Boolean
 
     fun saveAll(car: Iterable<Car>): Iterable<Car>
     fun findByManufacturerModel(pageable: Pageable,manufacturerModel: ManufacturerModel): Page<Car>
